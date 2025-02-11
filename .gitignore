@@ -169,3 +169,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# kafka_data
+kafka_data
+
+# macOS
+.DS_Store
