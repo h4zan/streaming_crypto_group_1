@@ -13,7 +13,7 @@ app = Application(
 coins_topic = app.topic(name="coins", value_serializer="json")
 
 
-def get_latest_coin_data(symbols="ETH", endpoint="quotes"):
+def get_latest_coin_data(symbol="ETH", endpoint="quotes"):
 
     base_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/"
 
@@ -30,7 +30,7 @@ def get_latest_coin_data(symbols="ETH", endpoint="quotes"):
     parameters = {"convert": "SEK"}
 
     endpoint_params = {
-        "quotes": {"symbol": symbols},
+        "quotes": {"symbol": symbol},
         "listings": {"start": "1", "limit": "10"},
     }
 
@@ -42,7 +42,12 @@ def get_latest_coin_data(symbols="ETH", endpoint="quotes"):
     try:
         response = session.get(api_endpoints[endpoint], params=parameters)
         data = json.loads(response.text)["data"]
-        return data
+
+        if symbol in data:
+            return data[symbol]
+        else:
+            return data
+
     except RequestException as e:
         pprint.pprint(f"An error occurred: {e}")
         return None
