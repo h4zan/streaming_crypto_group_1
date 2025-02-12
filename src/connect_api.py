@@ -11,7 +11,7 @@ app = Application(
 coins_topic = app.topic(name="coins", value_serializer="json")
 
 
-def get_latest_coin_data(symbol="BTC"):
+def get_latest_coin_data(symbol="ETH"):
     api_url_quotes = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
     api_url_listings = (
         "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"
@@ -24,7 +24,7 @@ def get_latest_coin_data(symbol="BTC"):
 
     parameters = {
         "symbol": symbol,
-        "convert": "USD",
+        "convert": "SEK",
     }
 
     session = Session()
