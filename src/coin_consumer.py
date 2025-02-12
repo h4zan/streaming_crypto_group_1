@@ -8,18 +8,20 @@ from constants import (
 )
 from quixstreams.sinks.community.postgresql import PostgreSQLSink
 
+
 def extract_coin_data(message):
-# Extraherar kryptodata från meddelandet som producer.py skapar
+    # Extraherar kryptodata från meddelandet som producer.py skapar
     latest_quote = message["quote"]["SEK"]
     return {
         "coin": message["name"],
         "price_sek": latest_quote["price"],
         "volume": latest_quote["volume_24h"],
-        "updated": message["last_updated"]
+        "updated": message["last_updated"],
     }
 
+
 def create_postgres_sink():
-# Skapar en anslutning till PostgresSQL för att spara krytpodata i postgres sink
+    # Skapar en anslutning till PostgresSQL för att spara krytpodata i postgres sink
     sink = PostgreSQLSink(
         host=POSTGRES_HOST,
         port=POSTGRES_PORT,
@@ -27,12 +29,13 @@ def create_postgres_sink():
         user=POSTGRES_USER,
         password=POSTGRES_PASSWORD,
         table_name="ethereum",
-        schema_auto_update=True
+        schema_auto_update=True,
     )
     return sink
 
+
 def main():
-# Consumer som "lyssnar" på "coins" topic, extraherar data och lagrar i PostgresSQL
+    # Consumer som "lyssnar" på "coins" topic, extraherar data och lagrar i PostgresSQL
     app = Application(
         broker_address="localhost:9092",
         consumer_group="coin_group",
@@ -55,6 +58,7 @@ def main():
 
     # Kör programmet
     app.run()
+
 
 if __name__ == "__main__":
     main()
