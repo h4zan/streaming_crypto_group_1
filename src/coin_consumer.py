@@ -26,7 +26,7 @@ def create_postgres_sink():
         dbname=POSTGRES_DBNAME,
         user=POSTGRES_USER,
         password=POSTGRES_PASSWORD,
-        table_name="Ethereum",
+        table_name="ethereum",
         schema_auto_update=True
     )
     return sink
