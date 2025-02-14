@@ -10,7 +10,7 @@ from quixstreams.sinks.community.postgresql import PostgreSQLSink
 
 
 def extract_coin_data(message):
-    # Extraherar kryptodata från meddelandet som producer.py skapar
+
     latest_quote = message["quote"]["SEK"]
     return {
         "coin": message["name"],
@@ -21,7 +21,7 @@ def extract_coin_data(message):
 
 
 def create_postgres_sink():
-    # Skapar en anslutning till PostgresSQL för att spara krytpodata i postgres sink
+
     sink = PostgreSQLSink(
         host=POSTGRES_HOST,
         port=POSTGRES_PORT,
@@ -35,28 +35,28 @@ def create_postgres_sink():
 
 
 def main():
-    # Consumer som "lyssnar" på "coins" topic, extraherar data och lagrar i PostgresSQL
+
     app = Application(
         broker_address="localhost:9092",
         consumer_group="coin_group",
         auto_offset_reset="earliest",
     )
 
-    # Ansluter till "coins" topic i Kafka
+    # connection to "coins" topic in Kafka
     coins_topic = app.topic(name="coins", value_deserializer="json")
 
-    # Skapar en streaming-dataframe från topic
+    # creating streaming-datafram from Kafka topic
     sdf = app.dataframe(topic=coins_topic)
 
-    # Extraherar data och visar i terminalen
+    # extract data and show in terminal
     sdf = sdf.apply(extract_coin_data)
     sdf.update(lambda coin_data: print(f"Consumer: {coin_data}"))
 
-    # Spara data till PostgreSQL
+    # saving cryptodata to PostgresSQL
     postgres_sink = create_postgres_sink()
     sdf.sink(postgres_sink)
 
-    # Kör programmet
+    # run program
     app.run()
 
 
