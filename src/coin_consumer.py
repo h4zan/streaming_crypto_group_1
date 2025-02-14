@@ -8,18 +8,20 @@ from constants import (
 )
 from quixstreams.sinks.community.postgresql import PostgreSQLSink
 
+
 def extract_coin_data(message):
-# extract cryptodata collected by coin_producer.py
+
     latest_quote = message["quote"]["SEK"]
     return {
         "coin": message["name"],
         "price_sek": latest_quote["price"],
         "volume": latest_quote["volume_24h"],
-        "updated": message["last_updated"]
+        "updated": message["last_updated"],
     }
 
+
 def create_postgres_sink():
-# create connection to PostgresSQL to save crypyodata in Postgres sink
+
     sink = PostgreSQLSink(
         host=POSTGRES_HOST,
         port=POSTGRES_PORT,
@@ -27,12 +29,13 @@ def create_postgres_sink():
         user=POSTGRES_USER,
         password=POSTGRES_PASSWORD,
         table_name="ethereum",
-        schema_auto_update=True
+        schema_auto_update=True,
     )
     return sink
 
+
 def main():
-# extract data from Kafka "coins" topic and store in Postgres sink
+
     app = Application(
         broker_address="localhost:9092",
         consumer_group="coin_group",
@@ -55,6 +58,7 @@ def main():
 
     # run program
     app.run()
+
 
 if __name__ == "__main__":
     main()
