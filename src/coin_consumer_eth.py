@@ -18,6 +18,7 @@ def extract_coin_data(message):
         "volume_24h": latest_quote["volume_24h"],
         "market_cap": latest_quote["market_cap"],
         "percent_change_24h": latest_quote["percent_change_24h"],
+        "percent_change_30d": latest_quote["percent_change_30d"],
         "updated": latest_quote["last_updated"],
     }
 
