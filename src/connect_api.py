@@ -1,19 +1,9 @@
-import pprint
-from quixstreams import Application
 from constants import COINMARKET_API
 from requests import Session, RequestException
-
 import json
+import pprint
 
-app = Application(
-    broker_address="localhost:9092",
-    consumer_group="coin_group",
-)
-
-coins_topic = app.topic(name="coins", value_serializer="json")
-
-
-def get_latest_coin_data(symbol="ETH", endpoint="quotes"):
+def get_latest_coin_data(symbol, endpoint="quotes"):
 
     base_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/"
 
@@ -43,10 +33,7 @@ def get_latest_coin_data(symbol="ETH", endpoint="quotes"):
         response = session.get(api_endpoints[endpoint], params=parameters)
         data = json.loads(response.text)["data"]
 
-        if symbol in data:
-            return data[symbol]
-        else:
-            return data
+        return data.get(symbol, None)
 
     except RequestException as e:
         pprint.pprint(f"An error occurred: {e}")
