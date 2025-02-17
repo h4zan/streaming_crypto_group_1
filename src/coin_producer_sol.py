@@ -16,7 +16,7 @@ def main():
             )
 
             print(
-                f"Producer SOL: Skickar {kafka_message.key} - Pris: {coin_latest['quote']['SEK']['price']:.2f} Kr"
+                f"Producer SOL: Sending {kafka_message.key} - Price: {coin_latest['quote']['SEK']['price']:.2f} Kr"
             )
 
             producer.produce(topic=sol_topic.name, key=kafka_message.key, value=kafka_message.value)
