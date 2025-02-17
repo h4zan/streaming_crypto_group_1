@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 from sqlalchemy import create_engine
 import pandas as pd
+import numpy as np
 from constants import (
     POSTGRES_USER,
     POSTGRES_DBNAME,
@@ -23,53 +24,65 @@ engine = create_engine(connection_string)
 def load_data(query):
     with engine.connect() as conn:
         df = pd.read_sql(query, conn)
-        # print(df)
         df = df.set_index("timestamp")
     return df
 
 
 def layout():
 
-    selected_currency = st.selectbox("Choose currency", CURRENCIES)
+    st.title("Kryptokollen Dashboard")
 
-    df = load_data(
-        """
-                SELECT * FROM ethereum;
-                """
-    )
-    st.markdown("# Ethereum")
-    st.markdown("## Latest data")
+    choice = st.radio("Choose Blockchain", ("Ethereum", "Solana"))
 
-    st.dataframe(df.tail())
+    if choice == "Ethereum":
+        selected_currency = st.radio("Choose currency", CURRENCIES)
+        st.write("## Latest Ethereum Data")
+        
+        df = load_data(
+        f"""
+            SELECT timestamp, coin, price_eur, volume_24h, percent_change_24h, market_cap FROM ethereum;
+        """)
 
-    st.markdown(f"## Ethereum (ETH) latest price in {selected_currency}")
+        df['price_eur'] = df['price_eur'].round(2)
+        df['percent_change_24h'] = df['percent_change_24h'].round(1).astype(str) + '%'
+        df['volume_24h'] = df['volume_24h'].apply(np.floor)
+        df['market_cap'] = df['market_cap'].apply(np.floor)
 
-    price_chart = line_chart(x=df.index, y=df["price_eur"], title = selected_currency)
+        st.dataframe(df.tail())
 
-    st.pyplot(price_chart, bbox_inches="tight")
+        st.markdown(f"## Ethereum (ETH) price in {selected_currency}")
 
-# def layout():
+        price_chart = line_chart(x=df.index, y=df["price_eur"], title = selected_currency)
 
-#     selected_currency = st.selectbox("Choose currency", CURRENCIES)
+        st.pyplot(price_chart, bbox_inches="tight")
 
-#     df = load_data(
-#         f"""
-#             SELECT timestamp, coin, ROUND((price_usd * {CURRENCIES[selected_currency]})::NUMERIC, 2) as price, volume FROM ordi;
-#         """
-#     )
-#     st.markdown("# Ordi data")
-#     st.markdown(f"## Latest data (in {selected_currency})")
+        price_chart = line_chart(
+            x=df.index,
+            y=df["price_eur"],
+            title=f"Price {selected_currency}",
+        )
 
-#     st.dataframe(df.tail(10))
 
-#     st.markdown(f"## Ordi latest price in {selected_currency}")
 
-    price_chart = line_chart(
-        x=df.index,
-        y=df["price_eur"],
-        title=f"Price {selected_currency}",
-    )
+    elif choice == "Solana":
+        selected_currency = st.radio("Choose currency", CURRENCIES)
+        st.write("## Latest Solana Data")
+        
+        df = load_data(""" SELECT * FROM solana;""")
 
+        st.dataframe(df.tail())
+
+        st.markdown(f"## Solana (SOL) price in {selected_currency}")
+
+        price_chart = line_chart(x=df.index, y=df["price_eur"], title = selected_currency)
+
+        st.pyplot(price_chart, bbox_inches="tight")
+
+        price_chart = line_chart(
+            x=df.index,
+            y=df["price_eur"],
+            title=f"Price {selected_currency}",
+        )
 
 if __name__ == "__main__":
     layout()
