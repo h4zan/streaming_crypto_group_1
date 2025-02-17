@@ -39,11 +39,11 @@ def main():
 
     app = Application(
         broker_address="localhost:9092",
-        consumer_group="coin_group",
+        consumer_group="coin_group_eth",
         auto_offset_reset="earliest",
     )
 
-    eth_topic = get_topic("ETH")
+    eth_topic = app.topic(name="eth", value_deserializer="json")
 
     sdf = app.dataframe(topic=eth_topic)
 

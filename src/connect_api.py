@@ -49,5 +49,4 @@ def get_latest_coin_data(symbol, endpoint="quotes"):
         print(f"Unexpected API response structure: {e}")
 
 def get_topic(symbol):
-    # creates a dynamic Kafka-topic based on choosen crypto
     return app.topic(name=symbol.lower(), value_serializer="json")
