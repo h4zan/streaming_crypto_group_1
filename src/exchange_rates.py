@@ -3,6 +3,7 @@ from constants import EXCHANGE_RATE_API
 from requests import Session
 import json
 
+CURRENCIES = {"EUR": 0.95, "SEK": 10.70, "NOK": 11.10, "DKK": 7.10}
 
 def get_exchange_rates():
 

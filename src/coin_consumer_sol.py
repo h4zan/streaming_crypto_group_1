@@ -11,10 +11,10 @@ from quixstreams.sinks.community.postgresql import PostgreSQLSink
 
 def extract_coin_data(message):
 
-    latest_quote = message["quote"]["SEK"]
+    latest_quote = message["quote"]["EUR"]
     return {
         "coin": message["name"],
-        "price_sek": latest_quote["price"],
+        "price_eur": latest_quote["price"],
         "volume": latest_quote["volume_24h"],
         "updated": message["last_updated"],
     }
