@@ -1,5 +1,4 @@
 from quixstreams import Application
-from connect_api import get_topic
 from constants import (
     POSTGRES_DBNAME,
     POSTGRES_HOST,

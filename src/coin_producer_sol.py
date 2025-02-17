@@ -1,10 +1,10 @@
 from quixstreams import Application
-from connect_api import get_latest_coin_data, get_topic
+from connect_api import get_latest_coin_data
 import time
 
 def main():
-    app = Application(broker_address="localhost:9092", consumer_group="coin_group")
-    sol_topic = get_topic("SOL")
+    app = Application(broker_address="localhost:9092", consumer_group="coin_group_sol")
+    sol_topic = app.topic(name="sol", value_serializer="json")
 
     with app.get_producer() as producer:
         while True:

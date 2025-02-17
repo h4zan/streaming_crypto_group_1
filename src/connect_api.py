@@ -1,14 +1,7 @@
-import pprint
-from quixstreams import Application
 from constants import COINMARKET_API
 from requests import Session, RequestException
-
 import json
-
-app = Application(
-    broker_address="localhost:9092",
-    consumer_group="coin_group",
-)
+import pprint
 
 def get_latest_coin_data(symbol, endpoint="quotes"):
 
@@ -47,6 +40,3 @@ def get_latest_coin_data(symbol, endpoint="quotes"):
         return None
     except KeyError as e:
         print(f"Unexpected API response structure: {e}")
-
-def get_topic(symbol):
-    return app.topic(name=symbol.lower(), value_serializer="json")
