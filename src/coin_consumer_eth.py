@@ -1,4 +1,5 @@
 from quixstreams import Application
+from connect_api import get_topic
 from constants import (
     POSTGRES_DBNAME,
     POSTGRES_HOST,
@@ -42,21 +43,16 @@ def main():
         auto_offset_reset="earliest",
     )
 
-    # connection to "coins" topic in Kafka
-    coins_topic = app.topic(name="coins", value_deserializer="json")
+    eth_topic = get_topic("ETH")
 
-    # creating streaming-datafram from Kafka topic
-    sdf = app.dataframe(topic=coins_topic)
+    sdf = app.dataframe(topic=eth_topic)
 
-    # extract data and show in terminal
     sdf = sdf.apply(extract_coin_data)
-    sdf.update(lambda coin_data: print(f"Consumer: {coin_data}"))
+    sdf.update(lambda coin_data: print(f"Consumer ETH: {coin_data}"))
 
-    # saving cryptodata to PostgresSQL
     postgres_sink = create_postgres_sink()
     sdf.sink(postgres_sink)
 
-    # run program
     app.run()
 
 
