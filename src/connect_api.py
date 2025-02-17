@@ -10,10 +10,7 @@ app = Application(
     consumer_group="coin_group",
 )
 
-coins_topic = app.topic(name="coins", value_serializer="json")
-
-
-def get_latest_coin_data(symbol="ETH", endpoint="quotes"):
+def get_latest_coin_data(symbol, endpoint="quotes"):
 
     base_url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/"
 
@@ -43,13 +40,14 @@ def get_latest_coin_data(symbol="ETH", endpoint="quotes"):
         response = session.get(api_endpoints[endpoint], params=parameters)
         data = json.loads(response.text)["data"]
 
-        if symbol in data:
-            return data[symbol]
-        else:
-            return data
+        return data.get(symbol, None)
 
     except RequestException as e:
         pprint.pprint(f"An error occurred: {e}")
         return None
     except KeyError as e:
         print(f"Unexpected API response structure: {e}")
+
+def get_topic(symbol):
+    # creates a dynamic Kafka-topic based on choosen crypto
+    return app.topic(name=symbol.lower(), value_serializer="json")
