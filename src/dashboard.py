@@ -1,6 +1,6 @@
 import streamlit as st
 
-# st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
 from streamlit_autorefresh import st_autorefresh
 from sqlalchemy import create_engine
@@ -32,6 +32,8 @@ def load_data(query):
         df = df.set_index("timestamp")
     return df
 
+rates = get_exchange_rates()
+currencies = ["EUR", "SEK", "NOK", "DKK"]
 
 def layout():
     
@@ -39,13 +41,10 @@ def layout():
 
     choice = st.radio("Choose Blockchain", ("Ethereum", "Solana"))
 
-    selected_currency = st.radio("Choose currency", ["EUR", "SEK", "NOK", "DKK"])
-    rates = get_exchange_rates()
-    st.write("Rates:", rates)
-    if rates is not None:
-        conversion_rate = rates.get(selected_currency, 1.0)
-    else:
-        conversion_rate = 1.0
+    selected_currency = st.radio("Choose Currency", currencies)
+    conversion_rate = rates.get(selected_currency, 1.0) if rates else 1.0
+    
+    st.metric("Exchange rate", round(conversion_rate, 1))
 
     if choice == "Ethereum":
         st.write("## Latest Ethereum Raw Data")
