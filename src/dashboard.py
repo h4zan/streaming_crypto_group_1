@@ -39,9 +39,10 @@ def layout():
     
     st.title("Kryptokollen Dashboard")
 
-    choice = st.radio("Choose Blockchain", ("Ethereum", "Solana"))
+    choice = st.radio("Choose Blockchain", ("Ethereum", "Solana"), horizontal=True)
 
-    selected_currency = st.radio("Choose Currency", currencies)
+    selected_currency = st.radio("Choose Currency", currencies, horizontal=True) 
+    
     conversion_rate = rates.get(selected_currency, 1.0) if rates else 1.0
     
     st.metric("Exchange rate", round(conversion_rate, 1))
